@@ -41,6 +41,9 @@ class Balances extends StatelessWidget {
                                   ),
                                   Text(
                                     bal.balAmt!,
+                                    style: const TextStyle(
+                                      fontFamily: 'Roboto',
+                                    ),
                                   ),
                                 ],
                               ),

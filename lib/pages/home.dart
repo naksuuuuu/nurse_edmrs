@@ -3,7 +3,7 @@
 import 'package:bu_edmrs/common/widgets/header_container.dart';
 import 'package:bu_edmrs/common/widgets/home_appbar.dart';
 import 'package:bu_edmrs/pages/balance.dart';
-import 'package:bu_edmrs/pages/medicalrecord.dart';
+import 'package:bu_edmrs/pages/medical_record.dart';
 import 'package:bu_edmrs/utils/constants/image_strings.dart';
 import 'package:bu_edmrs/utils/constants/menu_const.dart';
 import 'package:bu_edmrs/utils/constants/size.dart';

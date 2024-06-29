@@ -9,4 +9,6 @@ class AuthEndPoints {
   final String balance = 'getNurseBalance';
   final String employee = 'getEmployee';
   final String empInfo = 'getEmpInfo';
+  final String medicalInfo = 'getMedicalInfo';
+  final String medicalRecord = 'submitMedicalRecord';
 }

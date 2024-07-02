@@ -9,24 +9,29 @@ import 'package:bu_edmrs/common/widgets/header_container.dart';
 import 'package:bu_edmrs/utils/constants/size.dart';
 
 class MedicalData {
-  String diagnostics;
+  String disease;
   String doctorsNote;
   String prescription;
 
   MedicalData({
-    required this.diagnostics,
+    required this.disease,
     required this.doctorsNote,
     required this.prescription,
   });
 
-  toJson() {}
-
+  // toJson() {}
   // @override
   // String toString() {
-  //   return '{ diagnostics: $diagnostics, doctorsNote: $doctorsNote, prescription: $prescription }';
+  //   return '{ disease: $disease, doctorsNote: $doctorsNote, prescription: $prescription }';
   // }
 
-  // toJson() {}
+  Map<String, String> toJson() {
+    return {
+      'disease': disease,
+      'doctorsNote': doctorsNote,
+      'prescription': prescription,
+    };
+  }
 }
 
 class MedicalRecordDetails extends StatelessWidget {
@@ -43,7 +48,7 @@ class MedicalRecordDetails extends StatelessWidget {
 
   void addMedsCards(BuildContext context) {
     medicalDataList.add(MedicalData(
-      diagnostics: '',
+      disease: '',
       doctorsNote: '',
       prescription: '',
     ));
@@ -164,18 +169,53 @@ class MedicalRecordDetails extends StatelessWidget {
                                                       16.0),
                                                   child: Column(
                                                     children: [
+                                                      // TextFormField(
+                                                      //   controller:
+                                                      //       durationDate,
+                                                      //   expands: false,
+                                                      //   decoration:
+                                                      //       const InputDecoration(
+                                                      //     labelText:
+                                                      //         'Duration Date',
+                                                      //     prefixIcon: Icon(
+                                                      //       Iconsax.calendar_1,
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
                                                       TextFormField(
                                                         controller:
                                                             durationDate,
-                                                        expands: false,
                                                         decoration:
                                                             const InputDecoration(
                                                           labelText:
                                                               'Duration Date',
                                                           prefixIcon: Icon(
-                                                            Iconsax.calendar_1,
-                                                          ),
+                                                              Iconsax
+                                                                  .calendar_1),
                                                         ),
+                                                        onTap: () async {
+                                                          FocusScope.of(context)
+                                                              .requestFocus(
+                                                                  FocusNode());
+                                                          DateTime? pickedDate =
+                                                              await showDatePicker(
+                                                            context: context,
+                                                            initialDate:
+                                                                DateTime.now(),
+                                                            firstDate:
+                                                                DateTime(2000),
+                                                            lastDate:
+                                                                DateTime(2101),
+                                                          );
+
+                                                          if (pickedDate !=
+                                                              null) {
+                                                            durationDate.text =
+                                                                "${pickedDate.toLocal()}"
+                                                                    .split(
+                                                                        ' ')[0];
+                                                          }
+                                                        },
                                                       ),
                                                       const SizedBox(
                                                           height: 10),
@@ -259,19 +299,19 @@ class MedicalRecordDetails extends StatelessWidget {
                                                                 TextFormField(
                                                                   initialValue:
                                                                       medicalData
-                                                                          .diagnostics,
+                                                                          .disease,
                                                                   onChanged:
                                                                       (value) {
                                                                     medicalDataList[
                                                                             index]
-                                                                        .diagnostics = value;
+                                                                        .disease = value;
                                                                   },
                                                                   expands:
                                                                       false,
                                                                   decoration:
                                                                       const InputDecoration(
                                                                     labelText:
-                                                                        'Diagnostics',
+                                                                        'Disease',
                                                                     prefixIcon:
                                                                         Icon(Iconsax
                                                                             .heart_search),
@@ -409,7 +449,7 @@ class MedicalRecordDetails extends StatelessWidget {
 
                   for (var data in medicalDataList) {
                     medicalData.add(MedicalData(
-                      diagnostics: data.diagnostics,
+                      disease: data.disease,
                       doctorsNote: data.doctorsNote,
                       prescription: data.prescription,
                     ));

@@ -184,34 +184,116 @@ class PopUps {
   }
 } // end of Class PopUps
 
+// class SubmitController extends GetxController {
+//   final storage = GetStorage();
+//   Future<void> submitMedRecord(context, docNoValue, durationDate, hospitalValue,
+//       symptomsValue, List<MedicalData> medicalDataList) async {
+//     // print('docNoValue: $docNoValue');
+//     // print('durationDate: $durationDate');
+//     // print('hospitalValue: $hospitalValue');
+//     // print('symptomsValue: $symptomsValue');
+//     // print('medicalDataList: $medicalDataList');
+//     showDialog(
+//       context: context,
+//       barrierDismissible:
+//           false, // Dialog cannot be dismissed by tapping outside
+//       builder: (context) {
+//         return Dialog(
+//           elevation: 4,
+//           backgroundColor: Colors.white, // Makes background transparent
+//           child: Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 Lottie.asset(
+//                   'assets/images/animations/141397-loading-juggle.json', // Replace with your Lottie animation file
+//                   width: 150,
+//                 ),
+//                 const Text(
+//                   'Please Wait', // Display custom text or default 'Loading...'
+//                   style: TextStyle(fontSize: 16),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//     var url = Uri.parse(
+//         ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.medicalRecord);
+//     String user = storage.read('username');
+//     String userpass = storage.read('password');
+//     String credentials = '$user:$userpass';
+//     String encodedCredentials = base64Encode(utf8.encode(credentials));
+//     Map<String, String> headers = {
+//       'Authorization': 'Basic $encodedCredentials',
+//       'Content-Type': 'application/json'
+//     };
+
+//     // String medicalDataJsonList =
+//     //     jsonEncode(medicalDataList.map((data) => data.toJson()).toList());
+
+//     List<Map<String, dynamic>> medicalDataJsonList =
+//         medicalDataList.map((data) => data.toJson()).toList();
+
+//     Map<String, dynamic> body = {
+//       'docNoValue': docNoValue,
+//       'durationDate': durationDate,
+//       'hospitalValue': hospitalValue,
+//       'symptomsValue': symptomsValue,
+//       // 'medicalDataListJson': [medicalDataListJson],
+//       'medicalDataListJson': medicalDataJsonList,
+//       'userCreate': storage.read('username')
+//     };
+
+//     var response =
+//         await http.post(url, headers: headers, body: jsonEncode(body));
+//     print(response.statusCode);
+//     if (response.statusCode == 200) {
+//       Map<String, dynamic> result = json.decode(response.body);
+//       if (result['success'] == true) {
+//         Navigator.pop(context);
+//         PopUps.successToast(
+//             title: 'Success', message: result['message'], context: context);
+//       } else {
+//         Navigator.pop(context);
+//         PopUps.errorToast(
+//             title: 'Error', message: result['message'], context: context);
+//       }
+//     }
+//   }
+// }
+
 class SubmitController extends GetxController {
   final storage = GetStorage();
-  Future<void> submitMedRecord(context, docNoValue, durationDate, hospitalValue,
-      symptomsValue, List<MedicalData> medicalDataList) async {
-    print('docNoValue: $docNoValue');
-    print('durationDate: $durationDate');
-    print('hospitalValue: $hospitalValue');
-    print('symptomsValue: $symptomsValue');
-    print('medicalDataList: $medicalDataList');
+
+  Future<void> submitMedRecord(
+    context,
+    docNoValue,
+    durationDate,
+    hospitalValue,
+    symptomsValue,
+    List<MedicalData> medicalDataList,
+  ) async {
     showDialog(
       context: context,
-      barrierDismissible:
-          false, // Dialog cannot be dismissed by tapping outside
+      barrierDismissible: false,
       builder: (context) {
         return Dialog(
           elevation: 4,
-          backgroundColor: Colors.white, // Makes background transparent
+          backgroundColor: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Lottie.asset(
-                  'assets/images/animations/141397-loading-juggle.json', // Replace with your Lottie animation file
+                  'assets/images/animations/141397-loading-juggle.json',
                   width: 150,
                 ),
                 const Text(
-                  'Please Wait', // Display custom text or default 'Loading...'
+                  'Please Wait',
                   style: TextStyle(fontSize: 16),
                 ),
               ],
@@ -220,6 +302,7 @@ class SubmitController extends GetxController {
         );
       },
     );
+
     var url = Uri.parse(
         ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.medicalRecord);
     String user = storage.read('username');
@@ -231,33 +314,52 @@ class SubmitController extends GetxController {
       'Content-Type': 'application/json'
     };
 
-    Map<dynamic, dynamic> medicalDataListJson =
-        jsonEncode(medicalDataList.map((data) => data.toJson()).toList())
-            as Map;
+    List<Map<String, dynamic>> medicalDataJsonList =
+        medicalDataList.map((data) => data.toJson()).toList();
 
     Map<String, dynamic> body = {
       'docNoValue': docNoValue,
       'durationDate': durationDate,
       'hospitalValue': hospitalValue,
       'symptomsValue': symptomsValue,
-      'medicalDataListJson': [medicalDataListJson],
+      'medicalDataJsonList': medicalDataJsonList,
       'userCreate': storage.read('username')
     };
 
-    var response =
-        await http.post(url, headers: headers, body: jsonEncode(body));
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      Map<String, dynamic> result = json.decode(response.body);
-      if (result['success'] == true) {
-        Navigator.pop(context);
-        PopUps.successToast(
-            title: 'Success', message: result['message'], context: context);
+    try {
+      var response =
+          await http.post(url, headers: headers, body: jsonEncode(body));
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> result = json.decode(response.body);
+        if (result['success'] == true) {
+          Navigator.pop(context);
+          PopUps.successToast(
+              title: 'Success', message: result['message'], context: context);
+        } else {
+          Navigator.pop(context);
+          PopUps.errorToast(
+              title: 'Error', message: result['message'], context: context);
+        }
       } else {
+        // Handle non-200 status code (error from server)
         Navigator.pop(context);
         PopUps.errorToast(
-            title: 'Error', message: result['message'], context: context);
+            title: 'Error',
+            message: 'Failed to submit medical record. Please try again later.',
+            context: context);
       }
+    } catch (e) {
+      // Handle general error (e.g., network error)
+      print('Error submitting medical record: $e');
+      Navigator.pop(context);
+      PopUps.errorToast(
+          title: 'Error',
+          message: 'Failed to submit medical record. Please try again later.',
+          context: context);
     }
   }
 }

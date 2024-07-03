@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bu_edmrs/API/api_endpoints.dart';
+import 'package:bu_edmrs/pages/medical_record_dtl.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -12,17 +13,6 @@ class MedicalRecordController extends GetxController {
   RxBool isLoading = true.obs;
   RxList<Map<String, dynamic>> docNo = <Map<String, dynamic>>[].obs;
   var newSelectedDocNo = ''.obs;
-  // get docNo => null;
-
-  // void setDocNo(String docNo) {
-  //   getDocNo.value = docNo;
-  // }
-
-  // var docNo = ''.obs;
-  // void setDocNo(String getDocNo) {
-  //   docNo.value = getDocNo;
-  //   print(docNo);
-  // }
 
   Future<void> setDocNo(String getDocNo) async {
     isLoading.value = false;

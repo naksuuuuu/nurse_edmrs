@@ -11,4 +11,9 @@ class AuthEndPoints {
   final String empInfo = 'getEmpInfo';
   final String medicalInfo = 'getMedicalInfo';
   final String medicalRecord = 'submitMedicalRecord';
+  final String billMaster = 'getBillMaster';
+  final String getInbox = 'getNurseApproval';
+  final String requestData = 'getNurseRequestDetails';
+  final String approve = 'approveRequest';
+  final String reject = 'rejectRequest';
 }

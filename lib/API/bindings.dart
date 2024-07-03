@@ -10,8 +10,17 @@ import 'package:http/http.dart' as http;
 class DataService extends GetxController {
   final storage = GetStorage();
   final isLoading = true.obs;
+  final billisLoading = true.obs;
 
   // final medTableData = <Map<String, dynamic>>[].obs;
+  // final billMaster = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> billMaster = <Map<String, dynamic>>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadBillMaster();
+  }
 
   // Fetch Employee
   // Future<List<Map<String, dynamic>>?> fetchEmployee() async {
@@ -176,6 +185,88 @@ class DataService extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  // Bills Master Data
+  Future<void> loadBillMaster() async {
+    try {
+      billisLoading.value = true;
+      var url = Uri.parse(
+          ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.billMaster);
+      String user = storage.read('username');
+      String userpass = storage.read('password');
+      String credentials = '$user:$userpass';
+      String encodedCredentials = base64Encode(utf8.encode(credentials));
+      Map<String, String> headers = {
+        'Authorization': 'Basic $encodedCredentials'
+      };
+
+      var response = await http.post(url, headers: headers);
+      var res = jsonDecode(response.body);
+
+      if (res['success']) {
+        // print(res['data']);
+        List<dynamic> dataList = res['data'];
+        List<Map<String, dynamic>> listMap =
+            dataList.map((item) => item as Map<String, dynamic>).toList();
+        // print(listMap);
+        billisLoading.value = false;
+        billMaster.value = listMap;
+        // }
+      }
+    } finally {
+      billisLoading.value = false;
+    }
+  }
+
+  Future<String?> getCount() async {
+    var url =
+        Uri.parse(ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.getInbox);
+    String user = storage.read('username');
+    String userpass = storage.read('password');
+    String credentials = '$user:$userpass';
+    String encodedCredentials = base64Encode(utf8.encode(credentials));
+    Map<String, String> headers = {
+      'authorization': 'Basic $encodedCredentials'
+    };
+    var response = await http.post(
+      url,
+      headers: headers,
+    );
+    var res = jsonDecode(response.body);
+    print(res);
+    if (res['success']) {
+      // print(listMap);
+      return res['count'].toString();
+    } else {
+      return '0';
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> requestDetails({required docNo}) async {
+    var url = Uri.parse(
+        ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.requestData);
+    String user = storage.read('username');
+    String userpass = storage.read('password');
+    String credentials = '$user:$userpass';
+    String encodedCredentials = base64Encode(utf8.encode(credentials));
+    Map<String, String> headers = {
+      'authorization': 'Basic $encodedCredentials'
+    };
+    Map<String, String> body = {'docNo': '$docNo'};
+
+    var response = await http.post(url, headers: headers, body: body);
+    var res = jsonDecode(response.body);
+
+    if (res['success']) {
+      List<dynamic> dataList = res['data'];
+      List<Map<String, dynamic>> listMap =
+          dataList.map((item) => item as Map<String, dynamic>).toList();
+      // print(listMap);
+      return listMap;
+    } else {
+      return [];
     }
   }
 }
